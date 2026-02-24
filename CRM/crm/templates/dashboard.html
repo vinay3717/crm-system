@@ -1,6 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRM Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f6f9;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .number {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .red { color: red; }
+        .green { color: green; }
+    </style>
+</head>
+<body>
+
 <h1>CRM Dashboard</h1>
 
-<p>Total Deals: {{ total_deals }}</p>
-<p>Won Deals: {{ won_deals }}</p>
-<p>Lost Deals: {{ lost_deals }}</p>
-<p>Overdue Follow-ups: {{ overdue_followups }}</p>
+<div class="card-container">
+    <div class="card">
+        <div>Total Deals</div>
+        <div class="number">{{ total_deals }}</div>
+    </div>
+
+    <div class="card">
+        <div>Won Deals</div>
+        <div class="number green">{{ won_deals }}</div>
+    </div>
+
+    <div class="card">
+        <div>Lost Deals</div>
+        <div class="number red">{{ lost_deals }}</div>
+    </div>
+
+    <div class="card">
+        <div>Overdue Follow-ups</div>
+        <div class="number red">{{ overdue_followups }}</div>
+    </div>
+</div>
+
+</body>
+</html>
