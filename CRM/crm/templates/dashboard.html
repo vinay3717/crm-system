@@ -61,6 +61,27 @@
         <div class="number red">{{ overdue_followups }}</div>
     </div>
 </div>
+<h2>Overdue Follow-Ups</h2>
 
+{% if overdue_followups %}
+    <ul>
+    {% for followup in overdue_followups %}
+        <li>
+            {{ followup.deal.client.name }} -
+            {{ followup.deal.stage }} -
+            {{ followup.follow_up_date }}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No overdue follow-ups 🎉</p>
+{% endif %}
+<h2>Pipeline Breakdown</h2>
+
+<ul>
+{% for stage in pipeline_data %}
+    <li>{{ stage.stage }} : {{ stage.count }}</li>
+{% endfor %}
+</ul>
 </body>
 </html>
