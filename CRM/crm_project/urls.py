@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from crm.views import deals_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),  # For login/logout
-    path('', include('crm.urls')),
+    path('api/deals/', deals_api, name='deals-api'),
 ]

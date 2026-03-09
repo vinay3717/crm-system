@@ -39,7 +39,7 @@
 <body>
 
 <h1>CRM Dashboard</h1>
-
+<a href="/add-client/">Add Client</a> | <a href="/add-deal/">Add Deal</a>
 <div class="card-container">
     <div class="card">
         <div>Total Deals</div>
@@ -48,17 +48,17 @@
 
     <div class="card">
         <div>Won Deals</div>
-        <div class="number green">{{ won_deals }}</div>
+        <div class="number green">{{ won_deals_count }}</div>
     </div>
 
     <div class="card">
         <div>Lost Deals</div>
-        <div class="number red">{{ lost_deals }}</div>
+        <div class="number red">{{ lost_deals_count }}</div>
     </div>
 
     <div class="card">
         <div>Overdue Follow-ups</div>
-        <div class="number red">{{ overdue_followups }}</div>
+        <div class="number red">{{ overdue_followups_count }}</div>
     </div>
 </div>
 <h2>Overdue Follow-Ups</h2>
@@ -82,6 +82,65 @@
 {% for stage in pipeline_data %}
     <li>{{ stage.stage }} : {{ stage.count }}</li>
 {% endfor %}
+<h2>Deal Pipeline</h2>
+
+<div style="display:flex; gap:20px;">
+
+<div>
+<h3>Lead</h3>
+{% for deal in lead_deals %}
+<p>{{ deal.client.name }}</p>
+{% empty %}
+<p>No deals</p>
+{% endfor %}
+</div>
+
+<div>
+<h3>Contacted</h3>
+{% for deal in contacted_deals %}
+<p>{{ deal.client.name }}</p>
+{% empty %}
+<p>No deals</p>
+{% endfor %}
+</div>
+
+<div>
+<h3>Demo</h3>
+{% for deal in demo_deals %}
+<p>{{ deal.client.name }}</p>
+{% empty %}
+<p>No deals</p>
+{% endfor %}
+</div>
+
+<div>
+<h3>Negotiation</h3>
+{% for deal in negotiation_deals %}
+<p>{{ deal.client.name }}</p>
+{% empty %}
+<p>No deals</p>
+{% endfor %}
+</div>
+
+<div>
+<h3>Won</h3>
+{% for deal in won_deals %}
+<p>{{ deal.client.name }}</p>
+{% empty %}
+<p>No deals</p>
+{% endfor %}
+</div>
+
+<div>
+<h3>Lost</h3>
+{% for deal in lost_deals %}
+<p>{{ deal.client.name }}</p>
+{% empty %}
+<p>No deals</p>
+{% endfor %}
+</div>
+
+</div>
 </ul>
 </body>
 </html>
