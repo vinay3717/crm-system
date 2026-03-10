@@ -5,6 +5,9 @@ const stages = ["Lead", "Contacted", "Demo", "Negotiation", "Won", "Lost"];
 
 function App() {
   const [deals, setDeals] = useState([]);
+  const [client, setClient] = useState("");
+  const [value, setValue] = useState("");
+  const [stage, setStage] = useState("Lead");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/deals/")
@@ -38,10 +41,74 @@ function App() {
     })
   });
 };
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  fetch("http://127.0.0.1:8000/api/create-deal/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      client: client,
+      value: value,
+      stage: stage
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
+  .then((data) => {
+    console.log("Deal created successfully:", data);
+    // fetch updated deals list
+    fetch("http://127.0.0.1:8000/api/deals/")
+      .then(res => res.json())
+      .then(data => setDeals(data));
+
+    setClient("");
+    setValue("");
+    setStage("Lead");
+  })
+  .catch((error) => {
+    console.error("Error creating deal:", error);
+    alert("Error creating deal: " + error.message);
+  });
+};
 
   return (
+    
     <div style={{ padding: "40px" }}>
       <h1>CRM Pipeline</h1>
+
+      <form onSubmit={handleSubmit} style={{marginBottom:"30px"}}>
+        <h2>Create Deal</h2>
+        
+        <input
+          placeholder="Client Name"
+          value={client}
+          onChange={(e)=>setClient(e.target.value)}
+        />
+        
+        <input
+          placeholder="Deal Value"
+          value={value}
+          onChange={(e)=>setValue(e.target.value)}
+        />
+        
+        <select value={stage} onChange={(e)=>setStage(e.target.value)}>
+          <option>Lead</option>
+          <option>Contacted</option>
+          <option>Demo</option>
+          <option>Negotiation</option>
+          <option>Won</option>
+          <option>Lost</option>
+        </select>
+        
+        <button type="submit">Create Deal</button>
+      </form>
 
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>

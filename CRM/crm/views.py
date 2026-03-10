@@ -4,8 +4,9 @@ from django.db.models import Count
 from datetime import date
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Deal
+from .models import Deal,Client
 from .serializers import DealSerializer
+from django.contrib.auth.models import User
 
 @api_view(['GET'])
 def deals_api(request):
@@ -23,6 +24,21 @@ def update_deal_stage(request, deal_id):
     deal.stage=request.data.get("stage")
     deal.save()
     return Response({"message": "Stage updated"})
+
+@api_view(['POST'])
+def create_deal(request):
+    client_name=request.data.get("client")
+    value=request.data.get("value")
+    stage=request.data.get("stage")
+
+    try:
+        client, created = Client.objects.get_or_create(name=client_name)
+        user=User.objects.first()  # For simplicity, assigning to the first user
+
+        deal=Deal.objects.create(client=client, value=value, stage=stage, assigned_to=user)
+        return Response({"message": "Deal created", "deal_id": deal.id})
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
 
 def dashboard(request):
 
