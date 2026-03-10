@@ -13,6 +13,17 @@ def deals_api(request):
     serializer = DealSerializer(deals, many=True)
     return Response(serializer.data)
 
+@api_view(['PATCH'])
+def update_deal_stage(request, deal_id):
+    try:
+        deal = Deal.objects.get(id=deal_id)
+    except Deal.DoesNotExist:
+        return Response({"error": "Deal not found"}, status=404)
+    
+    deal.stage=request.data.get("stage")
+    deal.save()
+    return Response({"message": "Stage updated"})
+
 def dashboard(request):
 
     lead_deals = Deal.objects.filter(stage="Lead")

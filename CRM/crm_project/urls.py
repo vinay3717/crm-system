@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from crm.views import deals_api
+from crm.views import update_deal_stage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),  # For login/logout
     path('api/deals/', deals_api, name='deals-api'),
+    path('api/deals/<int:deal_id>/', update_deal_stage),
 ]

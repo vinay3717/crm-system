@@ -13,21 +13,31 @@ function App() {
   }, []);
 
   const onDragEnd = (result) => {
-    if (!result.destination) return;
 
-    const dealId = result.draggableId;
-    const newStage = result.destination.droppableId;
+  if (!result.destination) return;
 
-    const updatedDeals = deals.map((deal) =>
-      deal.id.toString() === dealId
-        ? { ...deal, stage: newStage }
-        : deal
-    );
+  const dealId = result.draggableId;
+  const newStage = result.destination.droppableId;
 
-    setDeals(updatedDeals);
+  const updatedDeals = deals.map((deal) =>
+    deal.id.toString() === dealId
+      ? { ...deal, stage: newStage }
+      : deal
+  );
 
-    // Later we will also update the stage in Django
-  };
+  setDeals(updatedDeals);
+
+  // Send update to Django
+  fetch(`http://127.0.0.1:8000/api/deals/${dealId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      stage: newStage
+    })
+  });
+};
 
   return (
     <div style={{ padding: "40px" }}>
