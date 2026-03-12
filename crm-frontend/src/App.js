@@ -8,7 +8,17 @@ function App() {
   const [client, setClient] = useState("");
   const [value, setValue] = useState("");
   const [stage, setStage] = useState("Lead");
+  const [selectedDeal, setSelectedDeal] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [note, setNote] = useState("");
 
+  const loadActivities = (dealId) => {
+
+  fetch(`http://127.0.0.1:8000/api/deals/${dealId}/activities/`)
+    .then(res => res.json())
+    .then(data => setActivities(data));
+
+};
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/deals/")
       .then(res => res.json())
@@ -141,12 +151,16 @@ const handleSubmit = (e) => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            onClick={() => {
+                              setSelectedDeal(deal);
+                              loadActivities(deal.id);
+                            }}
                             style={{
                               background: "white",
                               padding: "10px",
                               marginBottom: "10px",
                               borderRadius: "6px",
-                              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                              cursor: "pointer",
                               ...provided.draggableProps.style,
                             }}
                           >
@@ -164,6 +178,54 @@ const handleSubmit = (e) => {
           ))}
         </div>
       </DragDropContext>
+
+      {selectedDeal && (
+        <div style={{
+          marginTop: "40px",
+          border: "1px solid #ddd",
+          padding: "20px",
+          borderRadius: "8px"
+        }}>
+          <h2>{selectedDeal.client_name} Activity</h2>
+
+          <h3>History</h3>
+
+          {activities.map((activity, index) => (
+            <div key={index}>
+              <p>{activity.note}</p>
+              <small>{activity.date}</small>
+              <hr />
+            </div>
+          ))}
+
+          <h3>Add Activity</h3>
+
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Add note"
+          />
+
+          <button onClick={() => {
+            fetch("http://127.0.0.1:8000/api/add-activity/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                deal_id: selectedDeal.id,
+                note: note
+              })
+            })
+            .then(() => {
+              setNote("");
+              loadActivities(selectedDeal.id);
+            })
+          }}>
+            Add
+          </button>
+        </div>
+      )}
     </div>
   );
 }

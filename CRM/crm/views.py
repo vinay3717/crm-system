@@ -4,7 +4,7 @@ from django.db.models import Count
 from datetime import date
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Deal,Client
+from .models import Deal,Client,Activity
 from .serializers import DealSerializer
 from django.contrib.auth.models import User
 
@@ -13,6 +13,20 @@ def deals_api(request):
     deals = Deal.objects.all()
     serializer = DealSerializer(deals, many=True)
     return Response(serializer.data)
+@api_view(['GET'])
+def deal_activities(request, deal_id):
+
+    activities = Activity.objects.filter(deal_id=deal_id).order_by('-created_at')
+
+    data = [
+        {
+            "note": activity.note,
+            "date": activity.created_at.strftime("%d %b %Y")
+        }
+        for activity in activities
+    ]
+
+    return Response(data)
 
 @api_view(['PATCH'])
 def update_deal_stage(request, deal_id):
@@ -39,6 +53,21 @@ def create_deal(request):
         return Response({"message": "Deal created", "deal_id": deal.id})
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+    
+@api_view(['POST'])
+def create_activity(request):
+
+    deal_id = request.data.get("deal_id")
+    note = request.data.get("note")
+
+    deal = Deal.objects.get(id=deal_id)
+
+    Activity.objects.create(
+        deal=deal,
+        note=note
+    )
+
+    return Response({"message": "Activity added"})
 
 def dashboard(request):
 

@@ -33,16 +33,12 @@ class Deal(models.Model):
 
 
 class Activity(models.Model):
-    ACTIVITY_TYPES = [
-        ('Call', 'Call'),
-        ('Email', 'Email'),
-        ('Meeting', 'Meeting'),
-    ]
-
     deal = models.ForeignKey(Deal, on_delete=models.CASCADE)
-    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES)
-    notes = models.TextField()
+    note = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.deal.client.name} activity"
 
 
 class FollowUp(models.Model):

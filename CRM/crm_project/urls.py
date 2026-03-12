@@ -17,8 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from crm.views import deals_api
-from crm.views import update_deal_stage
-from crm.views import create_deal
+from crm.views import update_deal_stage,create_deal,deal_activities,create_activity
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +25,6 @@ urlpatterns = [
     path('api/deals/', deals_api, name='deals-api'),
     path('api/deals/<int:deal_id>/', update_deal_stage),
     path("api/create-deal/", create_deal),
+    path("api/deals/<int:deal_id>/activities/", deal_activities),
+    path("api/add-activity/", create_activity)
 ]
