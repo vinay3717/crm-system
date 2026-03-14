@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { Card, CardContent } from "./components/ui/card";
 
 const stages = ["Lead", "Contacted", "Demo", "Negotiation", "Won", "Lost"];
 
@@ -11,6 +12,35 @@ function App() {
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [activities, setActivities] = useState([]);
   const [note, setNote] = useState("");
+
+  const analytics = () => {
+
+    const totalPipeline = deals.reduce((sum, d) => sum + d.value, 0)
+
+    const wonDeals = deals.filter(d => d.stage === "Won").length
+
+    const activeDeals = deals.filter(
+      d => d.stage !== "Won" && d.stage !== "Lost"
+    ).length
+
+    const conversionRate =
+      deals.length > 0 ? ((wonDeals / deals.length) * 100).toFixed(1) : 0
+
+    const stageCounts = {
+      Lead: deals.filter(d => d.stage === "Lead").length,
+      Contacted: deals.filter(d => d.stage === "Contacted").length,
+      Demo: deals.filter(d => d.stage === "Demo").length,
+      Negotiation: deals.filter(d => d.stage === "Negotiation").length
+    }
+
+    return {
+      totalPipeline,
+      activeDeals,
+      wonDeals,
+      conversionRate,
+      stageCounts
+    }
+  }
 
   const loadActivities = (dealId) => {
 
@@ -88,10 +118,12 @@ const handleSubmit = (e) => {
   });
 };
 
+const { totalPipeline, activeDeals, wonDeals, conversionRate } = analytics()
+
   return (
     
-    <div style={{ padding: "40px" }}>
-      <h1>CRM Pipeline</h1>
+    <div className="p-8">
+      <h1 className="text-3xl font-bold mb-6">CRM Pipeline</h1>
 
       <form onSubmit={handleSubmit} style={{marginBottom:"30px"}}>
         <h2>Create Deal</h2>
@@ -119,6 +151,38 @@ const handleSubmit = (e) => {
         
         <button type="submit">Create Deal</button>
       </form>
+
+      <div className="grid grid-cols-4 gap-6 mb-10">
+
+        <Card>
+          <CardContent>
+            <p>Total Pipeline</p>
+            <h2>₹{totalPipeline}</h2>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <p>Active Deals</p>
+            <h2>{activeDeals}</h2>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <p>Won Deals</p>
+            <h2>{wonDeals}</h2>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <p>Conversion Rate</p>
+            <h2>{conversionRate}%</h2>
+          </CardContent>
+        </Card>
+
+      </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
